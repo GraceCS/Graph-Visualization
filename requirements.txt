@@ -1,0 +1,4 @@
+networkx==3.0
+Pillow==9.4.0
+pyvis==0.3.1
+streamlit==1.17.0
