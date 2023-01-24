@@ -4,69 +4,72 @@ import networkx as nx
 from pyvis.network import Network
 import streamlit.components.v1 as components
 
-header = st.container()
-dataset = st.container()
-features = st.container()
-graph_visu1 = st.container()
-graph_visu2 = st.container()
-model_training = st.container()
+# @st.cache
+# def get_data(filename):
+#     img = Image.open(filename)
+
+#     return img
+
+st.set_page_config(page_title="Graph Visu App", page_icon=":snowflake:", layout="wide")
+
+st.title("Welcome to Grace's Graph Visualization!")
+
+with st.container():
+    st.sidebar.header("Intro")
+    st.sidebar.write('My first Steamlit project :snowflake:. Let\'s visualize Graph Node Connections in a smart way! Powered by Pyvis.')
 
 
-# st.markdown(
-#     """
-#     <style>
-#     .main {
-#     background-color: #FFFFFF;
-#     }
-#     <style>
-#     """,
-#     unsafe_allow_html=True
-# )
-
-st.markdown(
-    """
-    <style>
-    .reportview-container .main .block-container{{
-        max-width: {max_width}px;
-        padding-top: {padding_top}rem;
-        padding-right: {padding_right}rem;
-        padding-left: {padding_left}rem;
-        padding-bottom: {padding_bottom}rem;
-    }}
-    .reportview-container .main {{
-        color: {COLOR};
-        background-color: {BACKGROUND_COLOR};
-    }}
-    <style>
-    """,
-    unsafe_allow_html=True
-)
+with st.container():
+    st.sidebar.header("ROIs in the Selden Map")
+    col1, col2 = st.sidebar.columns(2)
+    col1.image("images/ROI_1.png",width=100)
 
 
-@st.cache
-def get_data(filename):
-    img = Image.open(filename)
+# @st.cache
+# def tab_operation(pathname):
+#     try:  # Save and read graph as HTML file (on Streamlit Sharing)
+#         path = '/tmp'
+#         HtmlFile = open(f'{path}/'+pathname, 'r', encoding='utf-8')
+#     except:   # Save and read graph as HTML file (locally)
+#         path = 'html_files'
+#         HtmlFile = open(f'{path}/'+pathname, 'r', encoding='utf-8')
 
-    return img
+#     # Load HTML file in HTML component for display on Streamlit page
+#     return components.html(HtmlFile.read(), height=500)
 
 
-with header:
-    st.title("Welcome to Grace's Graph Visualization!")
-    st.text('My first Steamlit project. Let\'s visualize Graph Node Connections in a smart way!')
+# use radio button
+with st.container():
+    st.sidebar.header("Graph Construction Approach")
+    genre = st.sidebar.radio(label="", options=('KNN', 'DWKNN', 'Spatial-Spectral Graph'), label_visibility="collapsed")
 
-with dataset:
-    st.header("ROI in the historical map")
-    st.text('Show the ROI image')
-    img = get_data("images/ROIs_Selden.png")
-    st.image(img, caption="ROIs in the Selden Map")
+    if genre == 'KNN':
+        st.write('KNN decides graph connections via conventional K nearnest neighbors')
+        # tab_operation('net0_knn.html')
+    elif genre == 'DWKNN':
+        st.write("Density-weighted KNN considers local data density to assign adaptive number of neighbors")
+    else:
+        st.write("Add spatial connections and form a Spatial-Spectral graph")
 
-with features:
-    st.header("Graph Construction")
-    st.markdown('* **KNN:** conventional k nearest neighbors')
-    st.markdown('* **DWKNN:** consider data local density')
 
-with graph_visu1:
-    st.header("Pyvis Interactive Graph -- KNN")  
+with st.container():
+    st.sidebar.header("Attention Mechanism")
+    option = st.sidebar.selectbox(
+    'What attention mechanism would you like to use?',
+    ('GAT', 'SAD'))
+
+    st.write('You selected:', option)
+
+    # genre = st.sidebar.radio(label="", options=("GAT",), label_visibility="collapsed")
+    # if genre == 'GAT':
+    #     st.write('GAT adopts a single-layer feed-forward neural network to learn masked attension scores')
+
+
+tab1, tab2, tab3, tab4 = st.tabs(["KNN Graph", "DWKNN Graph", "Spatial-Spectral Graph", "GAT"])
+
+
+with tab1:
+    st.header("KNN Graph")
     try:  # Save and read graph as HTML file (on Streamlit Sharing)
         path = '/tmp'
         HtmlFile = open(f'{path}/net0_knn.html', 'r', encoding='utf-8')
@@ -75,11 +78,11 @@ with graph_visu1:
         HtmlFile = open(f'{path}/net0_knn.html', 'r', encoding='utf-8')
 
     # Load HTML file in HTML component for display on Streamlit page
-    components.html(HtmlFile.read(), height=600)
+    components.html(HtmlFile.read(), height=500)
 
 
-with graph_visu2:
-    st.header("Pyvis Interactive Graph -- DWKNN")  
+with tab2:
+    st.header("DWKNN Graph")
     try:  # Save and read graph as HTML file (on Streamlit Sharing)
         path = '/tmp'
         HtmlFile = open(f'{path}/net0_dwknn.html', 'r', encoding='utf-8')
@@ -88,17 +91,22 @@ with graph_visu2:
         HtmlFile = open(f'{path}/net0_dwknn.html', 'r', encoding='utf-8')
 
     # Load HTML file in HTML component for display on Streamlit page
-    components.html(HtmlFile.read(), height=600)
+    components.html(HtmlFile.read(), height=500)
 
 
-# with model_training:
-#     st.header('visualize the layer in GAT')
-#     st.text('which layer')
-
-#     sel_col, disp_col = st.columns(2)
-
-#     max_depth = sel_col.slider("select max depth", min_value=10, max_value=100,value=60,step=10)
-#     n_estimators = sel_col.selectbox('How many',options=[100,200,300,'No limit'],index=0)
-#     input_feature = sel_col.text_input('which feature?','1st dimension')
+with tab3:
+   st.header("Spatial-Spectral Graph")
+   st.write("Upcoming")
 
 
+with tab4:
+    st.header("GAT")
+    try:  # Save and read graph as HTML file (on Streamlit Sharing)
+        path = '/tmp'
+        HtmlFile = open(f'{path}/net_toy1.html', 'r', encoding='utf-8')
+    except:   # Save and read graph as HTML file (locally)
+        path = 'html_files'
+        HtmlFile = open(f'{path}/net_toy1.html', 'r', encoding='utf-8')
+
+    # Load HTML file in HTML component for display on Streamlit page
+    components.html(HtmlFile.read(), height=500)
